@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Check, Radio } from "lucide-react";
 
-export default function VolunteerRegister() {
+export default function AssossiationRegister() {
   const [fullName, setFullName] = useState('');
   const [fullNameErr, setFullNameErr] = useState('');
   const [email, setEmail] = useState('');
@@ -13,16 +12,15 @@ export default function VolunteerRegister() {
   const [passwordErr, setPasswordErr] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneErr, setPhoneErr] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [dateOfBirthErr, setDateOfBirthErr] = useState('');
-  const [nationalCardNumber, setNationalCardNumber] = useState('');
-  const [nationalCardNumberErr, setNationalCardNumberErr] = useState('');
-  const [volunteerType, setVolunteerType] = useState('');
-  const [volunteerTypeErr, setVolunteerTypeErr] = useState('');
+  const [locations, setLocations] = useState('');
+  const [locationsErr, setLocationsErr] = useState('');
+  const [cib, setCib] = useState('');
+  const [cibErr, setCibErr] = useState('');
+  const [file, setFile] = useState('');
+  const [fileErr, setFileErr] = useState('');
   const [serverErr, setServerErr] = useState('');
   const router = useRouter();
 
-  // Fonction de validation simple
   const validateForm = () => {
     let isValid = true;
     if (!fullName.trim()) {
@@ -48,7 +46,6 @@ export default function VolunteerRegister() {
     return isValid;
   };
 
-  // Gestion du formulaire
   const RegisterVolunteer = async (e) => {
     e.preventDefault();
     setServerErr('');
@@ -58,11 +55,11 @@ export default function VolunteerRegister() {
       const response = await axios.post('/api/register', {
         fullName,
         email,
-        password,
         phone,
-        dateOfBirth,
-        nationalCardNumber,
-        volunteerType,
+        locations: [],
+        cib,
+        file,
+        password
       }, {
         withCredentials: true
       });
@@ -78,8 +75,8 @@ export default function VolunteerRegister() {
   };
 
   return (
-    <div className="flex flex-row justify-center items-center font-sans">
-      <div className="flex flex-col justify-center items-center text-center mt-10 border-r pr-10 gap-2">
+    <div className="flex flex-row justify-center items-center font-sans h-screen">
+      <div className="flex flex-col w-1/2 justify-center items-center text-center pr-10 gap-2">
         <h2 className="text-7xl font-bold">Make a Big</h2>
         <h1 className="text-8xl font-bold">Difference by</h1>
         <h3 className="text-[#9E090F] text-5xl font-semibold">Small efforts</h3>
@@ -90,8 +87,8 @@ export default function VolunteerRegister() {
         <img src="./Ramadan.svg" className="h-[300px]" />
       </div>
 
-      <div className="p-10 w-96">
-        <form onSubmit={RegisterVolunteer} className="flex flex-col justify-center items-center gap-4 bg-[#DEDEDE] rounded-xl w-[500px] p-3 mt-10">
+      <div className="w-1/2 border-l-2 p-10 h-screen flex justify-center items-center">
+        <form onSubmit={RegisterVolunteer} className="flex flex-col justify-center items-center gap-4 bg-[#DEDEDE] rounded-xl w-[700px] p-10">
           <h1 className="text-5xl font-bold text-center text-[#ffff] pb-10 mt-7">Become an Assistor</h1>
           <input
             type="text"
@@ -99,7 +96,7 @@ export default function VolunteerRegister() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Full Name"
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
           />
           {fullNameErr && <p className="text-red-500 text-sm">{fullNameErr}</p>}
 
@@ -109,9 +106,49 @@ export default function VolunteerRegister() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="E-mail address"
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
           />
           {emailErr && <p className="text-red-500 text-sm">{emailErr}</p>}
+          
+          <input
+            type="number"
+            name="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Phone"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+          />
+          {phoneErr && <p className="text-red-500 text-sm">{phoneErr}</p>}
+
+          <input
+            type="text"
+            name="locations"
+            value={locations}
+            onChange={(e) => setLocations(e.target.value)}
+            placeholder="Locations"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+          />
+          {locationsErr && <p className="text-red-500 text-sm">{locationsErr}</p>}
+
+          <input
+            type="text"
+            name="CIB"
+            value={cib}
+            onChange={(e) => setCib(e.target.value)}
+            placeholder="CIB"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+          />
+          {cibErr && <p className="text-red-500 text-sm">{cibErr}</p>}
+          
+          <input
+            type="file"
+            name="file"
+            value={file}
+            onChange={(e) => setFile(e.target.value)}
+            placeholder="Password"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+          />
+          {fileErr && <p className="text-red-500 text-sm">{fileErr}</p>}
 
           <input
             type="password"
@@ -119,52 +156,11 @@ export default function VolunteerRegister() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
           />
           {passwordErr && <p className="text-red-500 text-sm">{passwordErr}</p>}
-
-          <input
-            type="number"
-            name="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone"
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {phoneErr && <p className="text-red-500 text-sm">{phoneErr}</p>}
-
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {dateOfBirthErr && <p className="text-red-500 text-sm">{dateOfBirthErr}</p>}
-
-          <input
-            type="text"
-            name="nationalCardNumber"
-            value={nationalCardNumber}
-            onChange={(e) => setNationalCardNumber(e.target.value)}
-            placeholder="National Card Number"
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {nationalCardNumberErr && <p className="text-red-500 text-sm">{nationalCardNumberErr}</p>}
-
-          <select
-            name="volunteerType"
-            value={volunteerType}
-            onChange={(e) => setVolunteerType(e.target.value)}
-            className="border rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          >
-            <option value="">Select Volunteer Type</option>
-            <option value="Community Service">Community Service</option>
-            <option value="Medical Aid">Medical Aid</option>
-            <option value="Education Support">Education Support</option>
-          </select>
-          {volunteerTypeErr && <p className="text-red-500 text-sm">{volunteerTypeErr}</p>}
           {serverErr && <p className="text-red-600 text-sm">{serverErr}</p>}
+
           <div className="flex flex-col justify-start items-start">
             <div>
               <input type="checkbox"/>
@@ -176,7 +172,6 @@ export default function VolunteerRegister() {
               <label className="text-[#A8AABC] ml-2">I am not a Robot</label>
             </div>
           </div>
-          
 
           <button type="submit" className="font-semibold bg-[#962728] text-[#C7CAE1] rounded-xl p-2 w-56">
             Sign Up
