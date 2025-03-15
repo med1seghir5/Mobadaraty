@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function AssossiationRegister() {
   const [fullName, setFullName] = useState("");
   const [fullNameErr, setFullNameErr] = useState("");
-  const [contact, setContact] = useState(""); // Email ou téléphone
+  const [contact, setContact] = useState("");
   const [contactErr, setContactErr] = useState("");
   const [password, setPassword] = useState("");
   const [passwordErr, setPasswordErr] = useState("");
@@ -114,23 +114,12 @@ export default function AssossiationRegister() {
           />
           {passwordErr && <p className="text-red-500 text-sm">{passwordErr}</p>}
           {serverErr && <p className="text-red-600 text-sm">{serverErr}</p>}
-
-          <div className="flex flex-col justify-start items-start w-full">
-            <label className="flex items-center text-[#A8AABC]">
-              <input type="checkbox" className="mr-2" />
-              I agree to the Terms and Conditions
-            </label>
-            <label className="flex items-center text-[#A8AABC]">
-              <input type="checkbox" className="mr-2" />
-              I am not a Robot
-            </label>
-          </div>
-
+          
           <button
             type="submit"
             className="font-semibold bg-[#962728] text-[#C7CAE1] rounded-xl p-2 w-56"
           >
-            Sign Up
+            Sign in
           </button>
 
           <p className="text-center text-gray-600 text-md font-medium">

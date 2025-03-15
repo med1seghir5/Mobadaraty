@@ -4,64 +4,48 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function AssossiationRegister() {
-  const [fullName, setFullName] = useState('');
-  const [fullNameErr, setFullNameErr] = useState('');
-  const [email, setEmail] = useState('');
-  const [emailErr, setEmailErr] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordErr, setPasswordErr] = useState('');
-  const [phone, setPhone] = useState('');
-  const [phoneErr, setPhoneErr] = useState('');
-  const [locations, setLocations] = useState('');
-  const [locationsErr, setLocationsErr] = useState('');
-  const [cib, setCib] = useState('');
-  const [cibErr, setCibErr] = useState('');
-  const [file, setFile] = useState('');
-  const [fileErr, setFileErr] = useState('');
-  const [serverErr, setServerErr] = useState('');
+  const [formState, setFormState] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    locations: [],
+    CIB: "",
+    file: null,
+    password: ""
+  });
+  const [errors, setErrors] = useState({});
+  const [serverErr, setServerErr] = useState("");
   const router = useRouter();
 
   const validateForm = () => {
-    let isValid = true;
-    if (!fullName.trim()) {
-      setFullNameErr('Full name is required.');
-      isValid = false;
-    } else setFullNameErr('');
-
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailErr('Invalid email format.');
-      isValid = false;
-    } else setEmailErr('');
-
-    if (password.length < 6) {
-      setPasswordErr('Password must be at least 6 characters.');
-      isValid = false;
-    } else setPasswordErr('');
-
-    if (!/^[0-9]{10}$/.test(phone)) {
-      setPhoneErr('Phone number must be 10 digits.');
-      isValid = false;
-    } else setPhoneErr('');
-
-    return isValid;
+    let newErrors = {};
+    if (!formState.name.trim()) newErrors.name = "Full name is required.";
+    if (!formState.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email))
+      newErrors.email = "Invalid email format.";
+    if (formState.password.length < 6) newErrors.password = "Password must be at least 6 characters.";
+    if (!/^[0-9]{10}$/.test(formState.phone)) newErrors.phone = "Phone number must be 10 digits.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const RegisterVolunteer = async (e) => {
     e.preventDefault();
-    setServerErr('');
+    setServerErr("");
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post('/api/register', {
-        fullName,
-        email,
-        phone,
-        locations: [],
-        cib,
-        file,
-        password
-      }, {
-        withCredentials: true
+      const formData = new FormData();
+      Object.entries(formState).forEach(([key, value]) => {
+        if (key === "file" && value) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, typeof value === "object" ? JSON.stringify(value) : value);
+        }
+      });
+
+      const response = await axios.post('https://mobadaraty-production.up.railway.app/api/v1/auth/association/register', formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" }
       });
 
       if (response.status === 201) {
@@ -70,7 +54,8 @@ export default function AssossiationRegister() {
         setServerErr('Unexpected server response.');
       }
     } catch (error) {
-      setServerErr('An error occurred. Please try again.');
+      console.error("Server error:", error.response?.data);
+      setServerErr(error.response?.data?.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -90,75 +75,27 @@ export default function AssossiationRegister() {
       <div className="w-1/2 border-l-2 p-10 h-screen flex justify-center items-center">
         <form onSubmit={RegisterVolunteer} className="flex flex-col justify-center items-center gap-4 bg-[#DEDEDE] rounded-xl w-[700px] p-10">
           <h1 className="text-5xl font-bold text-center text-[#ffff] pb-10 mt-7">Become an Assistor</h1>
-          <input
-            type="text"
-            name="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full Name"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {fullNameErr && <p className="text-red-500 text-sm">{fullNameErr}</p>}
+          {Object.entries(formState).map(([key, value]) => (
+            key !== "locations" && (
+              <div key={key} className="w-full">
+                <input
+                  type={key === "password" ? "password" : key === "file" ? "file" : "text"}
+                  name={key}
+                  value={key === "file" ? undefined : value}
+                  onChange={(e) =>
+                    setFormState({
+                      ...formState,
+                      [key]: key === "file" ? e.target.files[0] : e.target.value
+                    })
+                  }
+                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                  className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
+                />
+                {errors[key] && <p className="text-red-500 text-sm">{errors[key]}</p>}
+              </div>
+            )
+          ))}
 
-          <input
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-mail address"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {emailErr && <p className="text-red-500 text-sm">{emailErr}</p>}
-          
-          <input
-            type="number"
-            name="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {phoneErr && <p className="text-red-500 text-sm">{phoneErr}</p>}
-
-          <input
-            type="text"
-            name="locations"
-            value={locations}
-            onChange={(e) => setLocations(e.target.value)}
-            placeholder="Locations"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {locationsErr && <p className="text-red-500 text-sm">{locationsErr}</p>}
-
-          <input
-            type="text"
-            name="CIB"
-            value={cib}
-            onChange={(e) => setCib(e.target.value)}
-            placeholder="CIB"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {cibErr && <p className="text-red-500 text-sm">{cibErr}</p>}
-          
-          <input
-            type="file"
-            name="file"
-            value={file}
-            onChange={(e) => setFile(e.target.value)}
-            placeholder="Password"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {fileErr && <p className="text-red-500 text-sm">{fileErr}</p>}
-
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {passwordErr && <p className="text-red-500 text-sm">{passwordErr}</p>}
           {serverErr && <p className="text-red-600 text-sm">{serverErr}</p>}
 
           <div className="flex flex-col justify-start items-start">
@@ -166,7 +103,6 @@ export default function AssossiationRegister() {
               <input type="checkbox"/>
               <label className="text-[#A8AABC] ml-2">I agree to the Terms and Conditions</label>
             </div>
-
             <div>
               <input type="checkbox"/>
               <label className="text-[#A8AABC] ml-2">I am not a Robot</label>
@@ -177,7 +113,7 @@ export default function AssossiationRegister() {
             Sign Up
           </button>
           <p className="text-center text-gray-600 text-md font-medium">
-             <a className="text-[#E2AE29]">Already have an account?</a>
+            <a className="text-[#E2AE29]">Already have an account?</a>
           </p>
         </form>
       </div>
