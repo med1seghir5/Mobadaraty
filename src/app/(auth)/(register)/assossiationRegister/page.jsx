@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AssossiationRegister() {
@@ -9,8 +10,8 @@ export default function AssossiationRegister() {
     email: "",
     phone: "",
     locations: [],
-    CIB: "",
-    file: null,
+    cib: "",
+    file: "",
     password: ""
   });
   const [errors, setErrors] = useState({});
@@ -34,18 +35,8 @@ export default function AssossiationRegister() {
     if (!validateForm()) return;
 
     try {
-      const formData = new FormData();
-      Object.entries(formState).forEach(([key, value]) => {
-        if (key === "file" && value) {
-          formData.append(key, value);
-        } else {
-          formData.append(key, typeof value === "object" ? JSON.stringify(value) : value);
-        }
-      });
-
-      const response = await axios.post('https://mobadaraty-production.up.railway.app/api/v1/auth/association/register', formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" }
+      const response = await axios.post('https://mobadaraty-production.up.railway.app/api/v1/auth/association/register', formState, {
+        withCredentials: true
       });
 
       if (response.status === 201) {
@@ -54,8 +45,7 @@ export default function AssossiationRegister() {
         setServerErr('Unexpected server response.');
       }
     } catch (error) {
-      console.error("Server error:", error.response?.data);
-      setServerErr(error.response?.data?.message || 'An error occurred. Please try again.');
+      setServerErr('An error occurred. Please try again.');
     }
   };
 
@@ -81,13 +71,8 @@ export default function AssossiationRegister() {
                 <input
                   type={key === "password" ? "password" : key === "file" ? "file" : "text"}
                   name={key}
-                  value={key === "file" ? undefined : value}
-                  onChange={(e) =>
-                    setFormState({
-                      ...formState,
-                      [key]: key === "file" ? e.target.files[0] : e.target.value
-                    })
-                  }
+                  value={value}
+                  onChange={(e) => setFormState({...formState, [key]: e.target.value})}
                   placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
                   className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
                 />
@@ -112,9 +97,9 @@ export default function AssossiationRegister() {
           <button type="submit" className="font-semibold bg-[#962728] text-[#C7CAE1] rounded-xl p-2 w-56">
             Sign Up
           </button>
-          <p className="text-center text-gray-600 text-md font-medium">
-            <a className="text-[#E2AE29]">Already have an account?</a>
-          </p>
+          <div className="text-center text-gray-600 text-md font-medium">
+            <Link href="/assossiationLogin" className="text-[#E2AE29]">Already have an account?</Link>
+          </div>
         </form>
       </div>
     </div>
