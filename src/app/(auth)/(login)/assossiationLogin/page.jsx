@@ -40,18 +40,18 @@ export default function AssossiationRegister() {
   const RegisterVolunteer = async (e) => {
     e.preventDefault();
     setServerErr("");
-    if (!validateForm()) return;
+    /* if (!validateForm()) return; */
 
     try {
       const response = await axios.post(
-        "/api/register",
-        {
-          fullName,
-          contact,
-          password,
+        "https://mobadaraty-production.up.railway.app/api/v1/auth/login",
+        {  
+          email: "hocine@gmail.com",
+          password: "hocine",
         },
         { withCredentials: true }
       );
+      
 
       if (response.status === 201) {
         router.push("/");
