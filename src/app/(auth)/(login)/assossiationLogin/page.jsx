@@ -1,11 +1,11 @@
 "use client";
+
 import React, { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import axios from "axios";
 
 export default function AssossiationRegister() {
-  const [fullName, setFullName] = useState("");
-  const [fullNameErr, setFullNameErr] = useState("");
   const [contact, setContact] = useState("");
   const [contactErr, setContactErr] = useState("");
   const [password, setPassword] = useState("");
@@ -63,6 +63,7 @@ export default function AssossiationRegister() {
     }
   };
 
+
   return (
     <div className="flex flex-row justify-center items-center font-sans h-screen">
       <div className="flex flex-col w-1/2 justify-center items-center text-center px-10">
@@ -84,17 +85,8 @@ export default function AssossiationRegister() {
           className="flex flex-col justify-center items-center gap-4 bg-[#DEDEDE] rounded-xl w-[500px] p-10"
         >
           <h1 className="text-5xl font-bold text-center text-[#ffff] pb-10">
-            Become an Assistor
+            Welcome !
           </h1>
-
-          <input
-            type="text"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full Name"
-            className="border border-[#F7F7F7] rounded-xl text-[#434655] bg-[#ffff] font-semibold p-2 w-full"
-          />
-          {fullNameErr && <p className="text-red-500 text-sm">{fullNameErr}</p>}
 
           <input
             type="text"
@@ -114,7 +106,7 @@ export default function AssossiationRegister() {
           />
           {passwordErr && <p className="text-red-500 text-sm">{passwordErr}</p>}
           {serverErr && <p className="text-red-600 text-sm">{serverErr}</p>}
-          
+
           <button
             type="submit"
             className="font-semibold bg-[#962728] text-[#C7CAE1] rounded-xl p-2 w-56"
@@ -122,9 +114,10 @@ export default function AssossiationRegister() {
             Sign in
           </button>
 
-          <p className="text-center text-gray-600 text-md font-medium">
-            <a className="text-[#E2AE29]">Already have an account?</a>
-          </p>
+          <div className="flex flex-row justify-center items-center gap-2 text-center text-gray-600 text-md font-medium">
+            <Link href="" className="text-[#E2AE29]">Forgot password ?</Link>
+            <Link href="/assossiationRegister" className="text-[#E2AE29]">Don’t  have an account ?</Link>
+          </div>
         </form>
       </div>
     </div>

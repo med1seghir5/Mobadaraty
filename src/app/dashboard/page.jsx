@@ -20,13 +20,13 @@ const menuItems = [
 ];
 
 const workplaceItems = [
-  { name: "it3am saim", href: "/dashboard/it3am-saim", color: "bg-green-500" },
+  { name: "it3am saim", href: "/it3amSaim", color: "bg-green-500" },
   { name: "Medical donations", href: "/dashboard/medical-donations", color: "bg-yellow-500" },
   { name: "Sofat ramadan", href: "/dashboard/sofat-ramadan", color: "bg-purple-500" },
   { name: "Kids donation", href: "/dashboard/kids-donation", color: "bg-blue-500" },
 ];
 
-export default function Sidebar() {
+export default function Dashboard() {
   const pathname = usePathname();
 
   return (
